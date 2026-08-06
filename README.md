@@ -10,18 +10,20 @@ pelo painel do Substrato.
 ```
 index.html          → home (feito)
 origem.html          → pilar 01 — feito, com texto completo
-filosofia.html        → pilar 02 — a fazer (mesma estrutura de origem.html)
-ritual.html          → pilar 04 — a fazer
-sobre.html           → autoria/E-E-A-T — a fazer
-ebook.html           → landing de captura — a fazer
-pratica/index.html    → grid de posições (consumindo tabela `posicoes`) — a fazer
-pratica/[slug].html   → template de posição individual — a fazer
+filosofia.html        → pilar 02 — feito, com texto completo
+ritual.html          → pilar 04 — feito, com texto completo
+sobre.html           → autoria/E-E-A-T — feito (rascunho, revisar antes de publicar)
+ebook.html           → landing de captura — feito
+pratica/index.html    → grid de posições, consome `posicoes` via Supabase — feito
+pratica/posicao.html  → detalhe de posição por ?slug=, consome Supabase — feito
 
 css/tokens.css        → paleta, tipografia, escala (feito)
 css/site.css          → header, hero, seções, cards, footer (feito)
 js/site.js            → age gate + formulário de e-book (feito, precisa das chaves Supabase)
+js/pratica.js         → grid de posições (feito, precisa das chaves Supabase)
+js/posicao.js         → detalhe de posição (feito, precisa das chaves Supabase)
 
-supabase/schema.sql    → posicoes, artigos, leads_ebook, RLS (feito)
+supabase/schema.sql    → posicoes, artigos, leads_ebook, RLS, schema kamasutra (feito)
 ```
 
 ## Supabase
@@ -38,16 +40,15 @@ retorna 404).
 1. **Rodar o `schema.sql`** no projeto Supabase compartilhado (cria o
    schema `kamasutra` e as tabelas dentro dele).
 2. **Expor o schema** no painel (ver seção acima) e **preencher
-   `SUPABASE_URL` / `SUPABASE_ANON_KEY`** em `js/site.js`.
-3. **Popular `artigos`** com o texto de Origem (já redigido em `origem.html` —
-   pode ser migrado pra lá se quiser editar via painel em vez de HTML estático)
-   e escrever Filosofia/Ritual/Sobre.
-4. **Popular `posicoes`** — mesmo com `imagem_webp_url` vazio, já dá pra
-   cadastrar nome, nome sânscrito, nível e texto. O grid já tem o placeholder
-   "em breve" pronto pra receber os WebP quando estiverem prontos.
-5. **`pratica/index.html` e `pratica/[slug].html`** ainda não foram feitos —
-   são os únicos templates que faltam pra fechar o ciclo completo do content
-   model.
+   `SUPABASE_URL` / `SUPABASE_ANON_KEY`** em `js/site.js` — os outros dois
+   arquivos JS leem as mesmas constantes globais, então só precisa editar
+   em um lugar.
+3. **Revisar `sobre.html`** — tem rascunho com placeholders `[seu nome]`,
+   ajustar antes de publicar.
+4. **Cadastrar posições** na tabela `posicoes` (mesmo sem imagem, já
+   funciona — o grid mostra "em breve" até `imagem_webp_url` ser preenchido).
+5. Quando as ilustrações WebP estiverem prontas, só preencher a coluna
+   `imagem_webp_url` de cada posição — nenhuma mudança de código necessária.
 
 ## Notas de design
 
