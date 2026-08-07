@@ -24,7 +24,27 @@ js/pratica.js         → grid de posições (feito, precisa das chaves Supabase
 js/posicao.js         → detalhe de posição (feito, precisa das chaves Supabase)
 
 supabase/schema.sql    → posicoes, artigos, leads_ebook, RLS, schema kamasutra (feito)
+
+admin/index.html       → painel de administração — login + CRUD (feito)
+admin/css/admin.css    → estilos do painel (feito)
+admin/js/admin.js      → auth + CRUD de posicoes/artigos, leitura/export de leads (feito)
 ```
+
+## Painel admin
+
+Em `admin/index.html`. Login via Supabase Auth (e-mail/senha) — **precisa
+criar o usuário manualmente** no painel Supabase: **Authentication → Users
+→ Add user**, com o e-mail e senha que você vai usar pra entrar. Não existe
+cadastro público, só esse usuário criado à mão.
+
+Depois de logado, dá pra criar/editar/excluir posições e artigos (inclusive
+rascunhos não publicados — o painel usa uma policy separada de leitura/escrita
+para usuários autenticados), e ver/exportar os leads capturados pelo CTA
+do e-book em CSV.
+
+Preencher `SUPABASE_URL`/`SUPABASE_ANON_KEY` em `admin/js/admin.js`
+também — é um arquivo à parte de `js/site.js`, então as duas constantes
+precisam ficar em sincronia manualmente se você trocar de projeto Supabase.
 
 ## Supabase
 
@@ -43,12 +63,14 @@ retorna 404).
    `SUPABASE_URL` / `SUPABASE_ANON_KEY`** em `js/site.js` — os outros dois
    arquivos JS leem as mesmas constantes globais, então só precisa editar
    em um lugar.
-3. **Revisar `sobre.html`** — tem rascunho com placeholders `[seu nome]`,
+3. **Criar o usuário admin** em Authentication → Users, e preencher as
+   mesmas credenciais Supabase em `admin/js/admin.js`.
+4. **Revisar `sobre.html`** — tem rascunho com placeholders `[seu nome]`,
    ajustar antes de publicar.
-4. **Cadastrar posições** na tabela `posicoes` (mesmo sem imagem, já
-   funciona — o grid mostra "em breve" até `imagem_webp_url` ser preenchido).
-5. Quando as ilustrações WebP estiverem prontas, só preencher a coluna
-   `imagem_webp_url` de cada posição — nenhuma mudança de código necessária.
+5. **Cadastrar posições** pelo próprio painel admin (`admin/index.html`),
+   sem precisar mexer em SQL direto — mesmo sem imagem, já funciona.
+6. Quando as ilustrações WebP estiverem prontas, cole a URL no campo
+   correspondente do painel — nenhuma mudança de código necessária.
 
 ## Notas de design
 

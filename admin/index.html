@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Kama Sutra</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="css/admin.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="admin-body">
+
+<!-- ---------- Tela de login ---------- -->
+<div class="admin-login" id="loginScreen">
+  <div class="admin-login-card">
+    <span class="eyebrow">Kama Sutra</span>
+    <h1>Painel administrativo</h1>
+    <form id="loginForm">
+      <div class="field">
+        <label for="loginEmail">E-mail</label>
+        <input type="email" id="loginEmail" required autocomplete="username">
+      </div>
+      <div class="field">
+        <label for="loginPassword">Senha</label>
+        <input type="password" id="loginPassword" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Entrar</button>
+      <p class="form-error" id="loginError">E-mail ou senha incorretos.</p>
+    </form>
+  </div>
+</div>
+
+<!-- ---------- Shell do painel ---------- -->
+<div class="admin-shell" id="adminShell" hidden>
+  <aside class="admin-sidebar">
+    <div class="logo">Kama<span>Sutra</span></div>
+    <nav class="admin-nav">
+      <button data-view="posicoes" class="active">Posições</button>
+      <button data-view="artigos">Artigos</button>
+      <button data-view="leads">Leads (e-book)</button>
+    </nav>
+    <button class="admin-logout" id="logoutBtn">Sair</button>
+  </aside>
+
+  <main class="admin-main">
+
+    <!-- ---------- View: Posições ---------- -->
+    <section id="view-posicoes">
+      <div class="admin-header">
+        <div>
+          <h2>Posições</h2>
+          <p>Ásanas do guia prático. Publicadas aparecem em /pratica no site.</p>
+        </div>
+        <button class="btn btn-primary" id="newPosicaoBtn">+ Nova posição</button>
+      </div>
+      <div class="admin-table-wrap">
+        <table class="admin-table" id="posicoesTable">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Nível</th>
+              <th>Status</th>
+              <th>Ordem</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="posicoesTbody">
+            <tr><td colspan="5" class="empty-state">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ---------- View: Artigos ---------- -->
+    <section id="view-artigos" hidden>
+      <div class="admin-header">
+        <div>
+          <h2>Artigos</h2>
+          <p>Textos de Origem, Filosofia, Ritual e Sobre.</p>
+        </div>
+        <button class="btn btn-primary" id="newArtigoBtn">+ Novo artigo</button>
+      </div>
+      <div class="admin-table-wrap">
+        <table class="admin-table" id="artigosTable">
+          <thead>
+            <tr>
+              <th>Título</th>
+              <th>Pilar</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="artigosTbody">
+            <tr><td colspan="4" class="empty-state">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ---------- View: Leads ---------- -->
+    <section id="view-leads" hidden>
+      <div class="admin-header">
+        <div>
+          <h2>Leads do e-book</h2>
+          <p>E-mails capturados pelo CTA do site.</p>
+        </div>
+        <button class="btn btn-ghost" id="exportLeadsBtn">Exportar CSV</button>
+      </div>
+      <div class="admin-table-wrap">
+        <table class="admin-table" id="leadsTable">
+          <thead>
+            <tr>
+              <th>E-mail</th>
+              <th>Origem</th>
+              <th>Data</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="leadsTbody">
+            <tr><td colspan="4" class="empty-state">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ---------- Modal: editar/criar posição ---------- -->
+<div class="admin-modal-backdrop" id="posicaoModal" hidden>
+  <div class="admin-modal">
+    <h3 id="posicaoModalTitle">Nova posição</h3>
+    <form id="posicaoForm">
+      <input type="hidden" id="posicaoId">
+      <div class="field">
+        <label for="posicaoNome">Nome popular</label>
+        <input type="text" id="posicaoNome" required>
+      </div>
+      <div class="field">
+        <label for="posicaoSlug">Slug (URL)</label>
+        <input type="text" id="posicaoSlug" required placeholder="ex: lotus">
+      </div>
+      <div class="field">
+        <label for="posicaoSanscrito">Nome sânscrito</label>
+        <input type="text" id="posicaoSanscrito">
+      </div>
+      <div class="field">
+        <label for="posicaoNivel">Nível</label>
+        <select id="posicaoNivel">
+          <option value="iniciante">Iniciante</option>
+          <option value="intermediario">Intermediário</option>
+          <option value="avancado">Avançado</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="posicaoTag">Tag de benefício</label>
+        <input type="text" id="posicaoTag" placeholder="ex: conexão, energia, dinâmica">
+      </div>
+      <div class="field">
+        <label for="posicaoTextoCurto">Texto curto (card)</label>
+        <textarea id="posicaoTextoCurto"></textarea>
+      </div>
+      <div class="field">
+        <label for="posicaoTextoLongo">Texto longo (página)</label>
+        <textarea id="posicaoTextoLongo" style="min-height:160px;"></textarea>
+      </div>
+      <div class="field">
+        <label for="posicaoImagem">URL da imagem WebP</label>
+        <input type="text" id="posicaoImagem" placeholder="preencher quando a ilustração estiver pronta">
+      </div>
+      <div class="field">
+        <label for="posicaoOrdem">Ordem</label>
+        <input type="number" id="posicaoOrdem" value="0">
+      </div>
+      <div class="field checkbox-row">
+        <input type="checkbox" id="posicaoPublicado">
+        <label for="posicaoPublicado" style="margin:0;">Publicado</label>
+      </div>
+      <p class="form-error" id="posicaoError">Erro ao salvar. Confira o slug (precisa ser único).</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="posicaoCancelBtn">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ---------- Modal: editar/criar artigo ---------- -->
+<div class="admin-modal-backdrop" id="artigoModal" hidden>
+  <div class="admin-modal">
+    <h3 id="artigoModalTitle">Novo artigo</h3>
+    <form id="artigoForm">
+      <input type="hidden" id="artigoId">
+      <div class="field">
+        <label for="artigoTitulo">Título</label>
+        <input type="text" id="artigoTitulo" required>
+      </div>
+      <div class="field">
+        <label for="artigoSlug">Slug (URL)</label>
+        <input type="text" id="artigoSlug" required>
+      </div>
+      <div class="field">
+        <label for="artigoPilar">Pilar</label>
+        <select id="artigoPilar">
+          <option value="origem">Origem</option>
+          <option value="filosofia">Filosofia</option>
+          <option value="ritual">Ritual</option>
+          <option value="sobre">Sobre</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="artigoSubtitulo">Subtítulo</label>
+        <input type="text" id="artigoSubtitulo">
+      </div>
+      <div class="field">
+        <label for="artigoCorpo">Corpo (markdown)</label>
+        <textarea id="artigoCorpo" style="min-height:220px;"></textarea>
+      </div>
+      <div class="field">
+        <label for="artigoMeta">Meta description</label>
+        <input type="text" id="artigoMeta">
+      </div>
+      <div class="field checkbox-row">
+        <input type="checkbox" id="artigoPublicado" checked>
+        <label for="artigoPublicado" style="margin:0;">Publicado</label>
+      </div>
+      <p class="form-error" id="artigoError">Erro ao salvar. Confira o slug (precisa ser único).</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="artigoCancelBtn">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/admin.js"></script>
+</body>
+</html>

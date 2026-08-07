@@ -74,6 +74,25 @@ create policy "artigos_select_publicado" on artigos
 create policy "leads_insert_publico" on leads_ebook
   for insert with check (true);
 
+-- ---------- Policies de administração (painel logado) ----------
+-- Qualquer usuário autenticado no projeto (login do admin) pode
+-- ler/criar/editar/apagar posicoes e artigos, inclusive rascunhos
+-- não publicados, e ler os leads capturados.
+
+create policy "posicoes_admin_all" on posicoes
+  for all using (auth.role() = 'authenticated')
+  with check (auth.role() = 'authenticated');
+
+create policy "artigos_admin_all" on artigos
+  for all using (auth.role() = 'authenticated')
+  with check (auth.role() = 'authenticated');
+
+create policy "leads_admin_select" on leads_ebook
+  for select using (auth.role() = 'authenticated');
+
+create policy "leads_admin_delete" on leads_ebook
+  for delete using (auth.role() = 'authenticated');
+
 -- Edição (insert/update/delete em posicoes e artigos) fica restrita
 -- ao painel admin do Substrato, autenticado — sem policy pública de escrita aqui.
 

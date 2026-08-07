@@ -1,0 +1,211 @@
+/* ===================================================================
+   KAMA SUTRA — Admin
+   Reaproveita tokens.css (cores/tipografia), layout próprio de painel.
+   =================================================================== */
+
+body.admin-body {
+  background: var(--creme-alt);
+}
+
+/* ---------- Login ---------- */
+.admin-login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.admin-login-card {
+  background: var(--creme);
+  border-radius: var(--radius-card);
+  padding: 44px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 30px 60px -30px rgba(43, 31, 44, 0.3);
+}
+.admin-login-card h1 {
+  font-size: var(--step-2);
+  margin-top: 10px;
+  margin-bottom: 28px;
+}
+.field { margin-bottom: 16px; }
+.field label {
+  display: block;
+  font-size: var(--step--1);
+  font-weight: 700;
+  color: var(--tinta-suave);
+  margin-bottom: 6px;
+}
+.field input, .field select, .field textarea {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(43, 31, 44, 0.15);
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  background: var(--creme);
+  color: var(--tinta);
+}
+.field textarea { resize: vertical; min-height: 100px; }
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none;
+  border-color: var(--rosa);
+}
+.form-error {
+  color: #B3435A;
+  font-size: var(--step--1);
+  margin-top: 12px;
+  display: none;
+}
+.form-error.show { display: block; }
+
+/* ---------- Shell ---------- */
+.admin-shell {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 100vh;
+}
+.admin-sidebar {
+  background: var(--tinta);
+  color: var(--creme);
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+}
+.admin-sidebar .logo { color: var(--creme); font-size: var(--step-1); margin-bottom: 36px; }
+.admin-sidebar .logo span { color: var(--rosa-suave); }
+.admin-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.admin-nav button {
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: rgba(251, 246, 240, 0.65);
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  font-weight: 600;
+  padding: 11px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.admin-nav button:hover { background: rgba(251, 246, 240, 0.08); color: var(--creme); }
+.admin-nav button.active { background: var(--rosa); color: var(--creme); }
+.admin-logout {
+  background: transparent;
+  border: 1.5px solid rgba(251, 246, 240, 0.25);
+  color: rgba(251, 246, 240, 0.8);
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  cursor: pointer;
+}
+.admin-logout:hover { border-color: var(--creme); color: var(--creme); }
+
+.admin-main { padding: 40px 44px; max-width: 980px; }
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.admin-header h2 { font-size: var(--step-2); }
+.admin-header p { color: var(--tinta-suave); margin-top: 6px; font-size: var(--step--1); }
+
+/* ---------- Tabela ---------- */
+.admin-table-wrap {
+  background: var(--creme);
+  border-radius: var(--radius-card);
+  border: 1px solid rgba(43, 31, 44, 0.08);
+  overflow: hidden;
+}
+table.admin-table { width: 100%; border-collapse: collapse; }
+table.admin-table th {
+  text-align: left;
+  font-size: var(--step--1);
+  color: var(--tinta-suave);
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(43, 31, 44, 0.08);
+  font-weight: 700;
+}
+table.admin-table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(43, 31, 44, 0.06);
+  font-size: var(--step--1);
+  vertical-align: middle;
+}
+table.admin-table tr:last-child td { border-bottom: none; }
+table.admin-table tr:hover { background: var(--creme-alt); }
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--radius-soft);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.badge-on { background: var(--verde-suave); color: var(--verde); }
+.badge-off { background: rgba(43, 31, 44, 0.08); color: var(--tinta-suave); }
+
+.row-actions { display: flex; gap: 10px; }
+.row-actions button {
+  background: transparent;
+  border: none;
+  color: var(--rosa);
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}
+.row-actions button.danger { color: #B3435A; }
+.row-actions button:hover { text-decoration: underline; }
+
+/* ---------- Modal de edição ---------- */
+.admin-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(43, 31, 44, 0.5);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 20px;
+  overflow-y: auto;
+  z-index: 60;
+}
+.admin-modal-backdrop[hidden] { display: none; }
+.admin-modal {
+  background: var(--creme);
+  border-radius: var(--radius-card);
+  padding: 36px;
+  width: 100%;
+  max-width: 560px;
+}
+.admin-modal h3 { font-size: var(--step-1); margin-bottom: 22px; }
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.checkbox-row input { width: auto; }
+
+.empty-state {
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--tinta-suave);
+}
+
+@media (max-width: 760px) {
+  .admin-shell { grid-template-columns: 1fr; }
+  .admin-sidebar { flex-direction: row; align-items: center; padding: 16px 20px; }
+  .admin-sidebar .logo { margin-bottom: 0; }
+  .admin-nav { flex-direction: row; overflow-x: auto; }
+  .admin-main { padding: 24px 20px; }
+}
