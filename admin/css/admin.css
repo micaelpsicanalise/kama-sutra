@@ -7,6 +7,12 @@ body.admin-body {
   background: var(--creme-alt);
 }
 
+/* Garante que o atributo hidden sempre vença, independente de outras
+   regras de display definidas mais abaixo neste arquivo. */
+[hidden] {
+  display: none !important;
+}
+
 /* ---------- Login ---------- */
 .admin-login {
   min-height: 100vh;
