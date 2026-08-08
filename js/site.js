@@ -4,8 +4,10 @@
 // pelos valores do projeto Substrato deste tenant.
 // ===================================================================
 
-const SUPABASE_URL = 'https://SEU-PROJETO.supabase.co';
-const SUPABASE_ANON_KEY = 'SUA_ANON_KEY';
+const SUPABASE_URL = 'https://aewcxqzpbipwcdpsjfht.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_mINpOQLVbi0pilHc9bEtBA_l1a0o6c6';
+
+const EBOOK_URL = 'https://aewcxqzpbipwcdpsjfht.supabase.co/storage/v1/object/public/ebooks/kama-sutra-guia-completo.pdf';
 
 // Este projeto usa o schema dedicado "kamasutra" (não "public"),
 // já que o Supabase é compartilhado com mantra/umbanda. É por isso
@@ -40,6 +42,7 @@ const SUPABASE_ANON_KEY = 'SUA_ANON_KEY';
     const email = input.value.trim();
     const btn = form.querySelector('button');
     const originalLabel = btn.textContent;
+    const origem = form.dataset.origem || 'home_cta';
 
     btn.disabled = true;
     btn.textContent = 'Enviando...';
@@ -54,17 +57,20 @@ const SUPABASE_ANON_KEY = 'SUA_ANON_KEY';
           'Content-Profile': 'kamasutra',
           'Prefer': 'return=minimal'
         },
-        body: JSON.stringify({ email, origem: 'home_cta', criado_em: new Date().toISOString() })
+        body: JSON.stringify({ email, origem, criado_em: new Date().toISOString() })
       });
 
       if (!res.ok) throw new Error('Falha no envio');
 
-      btn.textContent = 'Enviado! Confira seu e-mail';
-      input.value = '';
+      // Sucesso: troca o formulário por um botão de download direto do PDF.
+      form.innerHTML = `
+        <a href="${EBOOK_URL}" target="_blank" rel="noopener" class="btn btn-primary" download>
+          Baixar o e-book (PDF) →
+        </a>
+      `;
     } catch (err) {
       console.error(err);
       btn.textContent = 'Erro — tente novamente';
-    } finally {
       setTimeout(() => {
         btn.disabled = false;
         btn.textContent = originalLabel;
