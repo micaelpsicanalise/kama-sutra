@@ -8,8 +8,8 @@
 // as constantes abaixo precisam ser mantidas em sincronia manualmente.
 // ===================================================================
 
-const SUPABASE_URL = 'https://aewcxqzpbipwcdpsjfht.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_mINpOQLVbi0pilHc9bEtBA_l1a0o6c6';
+const SUPABASE_URL = 'https://SEU-PROJETO.supabase.co';
+const SUPABASE_ANON_KEY = 'SUA_ANON_KEY';
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   db: { schema: 'kamasutra' }
