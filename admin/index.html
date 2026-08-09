@@ -173,8 +173,11 @@
         <textarea id="posicaoTextoLongo" style="min-height:160px;"></textarea>
       </div>
       <div class="field">
-        <label for="posicaoImagem">URL da imagem WebP</label>
-        <input type="text" id="posicaoImagem" placeholder="preencher quando a ilustração estiver pronta">
+        <label for="posicaoImagemArquivo">Imagem (WebP, JPG ou PNG)</label>
+        <input type="file" id="posicaoImagemArquivo" accept="image/webp,image/jpeg,image/png">
+        <input type="hidden" id="posicaoImagem">
+        <div id="posicaoImagemPreviewWrap" style="margin-top:10px;"></div>
+        <p id="posicaoImagemStatus" style="font-size: var(--step--1); color: var(--tinta-suave); margin-top: 6px;"></p>
       </div>
       <div class="field">
         <label for="posicaoOrdem">Ordem</label>
