@@ -125,6 +125,9 @@ function openPosicaoModal(title) {
 document.getElementById('newPosicaoBtn').addEventListener('click', () => {
   posicaoForm.reset();
   document.getElementById('posicaoId').value = '';
+  document.getElementById('posicaoImagem').value = '';
+  document.getElementById('posicaoImagemPreviewWrap').innerHTML = '';
+  document.getElementById('posicaoImagemStatus').textContent = '';
   openPosicaoModal('Nova posição');
 });
 
@@ -144,6 +147,18 @@ function editPosicao(id, data) {
   document.getElementById('posicaoImagem').value = p.imagem_webp_url || '';
   document.getElementById('posicaoOrdem').value = p.ordem ?? 0;
   document.getElementById('posicaoPublicado').checked = !!p.publicado;
+
+  const previewWrap = document.getElementById('posicaoImagemPreviewWrap');
+  const status = document.getElementById('posicaoImagemStatus');
+  document.getElementById('posicaoImagemArquivo').value = '';
+  if (p.imagem_webp_url) {
+    previewWrap.innerHTML = `<img src="${p.imagem_webp_url}" alt="" style="width:100%; max-width:220px; border-radius:12px; display:block;">`;
+    status.textContent = 'Imagem atual — escolha outro arquivo pra substituir.';
+  } else {
+    previewWrap.innerHTML = '';
+    status.textContent = 'Nenhuma imagem ainda.';
+  }
+
   openPosicaoModal('Editar posição');
 }
 
@@ -153,6 +168,33 @@ async function deletePosicao(id) {
   if (error) { alert('Erro ao excluir: ' + error.message); return; }
   loadPosicoes();
 }
+
+// ---------- Upload de imagem (Supabase Storage, bucket "posicoes-imagens") ----------
+document.getElementById('posicaoImagemArquivo').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  const status = document.getElementById('posicaoImagemStatus');
+  const previewWrap = document.getElementById('posicaoImagemPreviewWrap');
+  if (!file) return;
+
+  status.textContent = 'Enviando...';
+  const ext = file.name.split('.').pop();
+  const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+  const { error: uploadError } = await sb.storage.from('posicoes-imagens').upload(path, file, {
+    cacheControl: '3600',
+    upsert: false
+  });
+
+  if (uploadError) {
+    status.textContent = 'Erro ao enviar imagem: ' + uploadError.message;
+    return;
+  }
+
+  const { data } = sb.storage.from('posicoes-imagens').getPublicUrl(path);
+  document.getElementById('posicaoImagem').value = data.publicUrl;
+  previewWrap.innerHTML = `<img src="${data.publicUrl}" alt="" style="width:100%; max-width:220px; border-radius:12px; display:block;">`;
+  status.textContent = 'Imagem enviada ✓';
+});
 
 posicaoForm.addEventListener('submit', async (e) => {
   e.preventDefault();
